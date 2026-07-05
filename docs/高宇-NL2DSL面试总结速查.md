@@ -204,6 +204,32 @@ NL2DSL 要准确理解自然语言，需知道有哪些表/字段/指标/维度/
 - **源表字段变化**：定时抽 DB 元数据对比上次 schema 快照，生成变更报告触发语义层同步。
 - **指标口径变化**：版本管理，新口径上线前跑评测确认影响，历史审计记录当时版本。
 
+### 数仓与 Spark 基础（速记，简历离线为主）
+
+- **数仓分层**：ODS（贴源/按天分区）→ DWD（清洗明细/粒度统一）→ DWS（主题预聚合）→ ADS（应用/报表）。目的：复用、解耦、可控、性能。元数据宽表 ≈ DWS/ADS 性质。
+- **建模**：维度建模（Kimball，星型/雪花，OLAP 友好）vs 范式建模（Inmon，三范式，规范但 join 多）。实际多混合：底层规范、上层星型宽表。
+- **事实/维度/SCD**：事实表存度量+外键（事务型/周期快照/累积快照）；维度表存属性；SCD2 最常用（起止时间保留历史），SCD1 覆盖、SCD3 加历史列。
+- **指标体系**：原子指标（度量+业务过程，如下单金额）→ 派生指标（+修饰词+时间周期，华东近7天下单金额）→ 复合指标（转化率/同环比）。统一 alias+表达式+版本，和 NL2DSL 注册表同一套。
+- **Spark 抽象**：RDD（底层/强类型/无 schema）< DataFrame（schema/Catalyst 优化）< DataSet（强类型）。平时用 DataFrame/Spark SQL。
+- **执行流程**：Driver 构建 DAG → DAGScheduler 按 shuffle 切 Stage → TaskScheduler 调度 Task 到 Executor。窄依赖同 Stage 流水线，宽依赖切 Stage。
+- **Shuffle**：上游按 key 写本地盘（write）→ 下游拉取（read）。瓶颈：磁盘 IO+网络+序列化+排序+易倾斜。减 shuffle（广播 join）、减数据量（先过滤）、治倾斜。
+- **资源**：num-executors / executor-cores / executor-memory / shuffle 分区数。每 task 128MB~1GB；按 Spark UI（task 数/利用率/shuffle/GC）调，不盲目堆内存。动态分配适合资源波动。
+- **广播变量**：小表/配置广播到 Executor，broadcast hash join 避免 shuffle。**累加器**：分布式只增计数（脏数据条数），action 后才更新。
+- **小文件**：分区过多/分区数过大/流式写入 → NN 压力+调度开销+seek。解：coalesce（缩分区不 shuffle）/ repartition（扩/重分布 shuffle）/ Hive merge / 控分区粒度 / ORC+Parquet 列存。coalesce 不能可靠扩。
+- **文件格式**：ORC（Hive 生态/压缩比高/带索引）vs Parquet（Spark 生态/通用）。列存做列裁剪+谓词下推。压缩 Snappy（快/中）平衡首选，Zlib/Gzip 高比慢，LZO 可切片。
+- **SQL 调优**：分区裁剪（WHERE 用分区字段别包函数）、谓词下推（过滤靠近源）、列裁剪（别 select *）、mapjoin（小表广播免 shuffle）。加：避免笛卡尔积、join on 等值、先过滤再聚合。
+- **数据质量**：准确性/完整性/一致性/及时性/唯一性。规则：空值率/重复率/枚举合法/数据量波动/主键唯一/分区完整/指标波动。校验不达标告警或阻断下游。
+- **调度**：DolphinScheduler/Airflow/Azkaban。管定时+依赖+重试+SLA。避免环形依赖、跨层依赖、长链路单点。
+- **AQE**（Spark3）：运行时合并小 shuffle 分区、自动转 broadcast join、自动处理倾斜。`spark.sql.adaptive.enabled=true`。
+- **Spark 内存**：reserved（预留）+ user memory + spark memory（execution/storage 动态借还，`spark.memory.fraction` 控制）。理解能调 OOM/spill/cache 占用。
+- **Kryo**：比 Java 序列化快且紧凑，需注册类；shuffle 默认 Kryo；closure 可能仍用 Java。
+- **倾斜方案**：加盐/两阶段聚合/广播小表/过滤热点 key/增 shuffle 分区（对单 key 无效）/自定义 Partitioner/AQE 自动倾斜/热点单独处理再 union。加盐副作用：改 key 语义需两阶段还原。
+- **分桶 vs 分区**：分区按目录裁剪（粗粒度过滤），分桶按 hash 拆固定文件（bucket map join/采样/均匀分布）。可叠加：按天分区+按 user_id 分桶。
+- **大表 join 大表**：先过滤/列裁剪/提前聚合、分桶表 bucket map join、SMB join、Skew Join、热点拆分 union、维度退化预计算宽表（最稳）。
+- **血缘**：SQL AST 解析（sqlglot/Calcite）/调度集成/Hook 采集。用途：影响分析、根因定位、合规、下线评估。帮 NL2DSL 知道指标物理来源，辅助 Schema 召回+审计。
+- **一致性维度/总线矩阵**：跨主题域统一维度保证口径一致；总线矩阵规划业务过程×维度，保证可扩展、复用。
+- **实时口径（不硬讲）**：Structured Streaming 微批+watermark+exactly-once；Lambda 批流双链路（两套代码口径难统一）、Kappa 纯流（重算成本高）。简历离线为主，倾向批为主按需补流，不强行上 Kappa。
+
 ---
 
 ## 7. Vibe Coding / AI 辅助开发
@@ -272,6 +298,8 @@ AI 初稿只校验 DSL 的 JSON 结构（Pydantic），忽略业务语义校验�
 - ❌ 硬编接入业务域/用户/QPS/数据量/优化百分比。
 - ❌ 只说“做过 Spark SQL 清洗”，讲不出输入表/输出表/字段/下游用途。
 - ❌ Java 经验只背八股，不结合消息积压/底库导入/WebSocket 权限推送/现场部署。
+- ❌ 只背 Spark/数仓八股，说不出 RDD/Stage/Shuffle/资源调优和自己元数据加工任务的关联。
+- ❌ 把实时流/Flink/Structured Streaming 包装成主力方向（简历是离线为主，按“了解原理”讲，不硬上 Kappa）。
 
 ---
 
