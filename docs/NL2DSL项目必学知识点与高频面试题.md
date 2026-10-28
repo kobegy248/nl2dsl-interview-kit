@@ -194,6 +194,57 @@
 
 **动手验收：** 读 `tests/integration/test_multi_domain.py`、`test_agent_orchestrator.py`，找一个简单问题和一个复杂问题的不同入口。
 
+## 专项：工具调用（Tool Use / Function Calling）—— Agent 岗必考，本项目未落地
+
+> 这是简历相对 Agent 开发岗最明显的一块短板：项目是"编排型 Agent"，没有让 LLM 调用外部工具。本专项教你把它讲圆——诚实承认边界 + 讲清原理 + 给出设计思路。
+
+### 一、诚实定位：本项目为什么没有工具调用
+
+当前 Agent 的能力是"意图识别 → 拆子查询 → 调度 Graph → 聚合结果"，属于**编排型 Agent**：LLM 只做规划和 DSL 生成，真正的"执行"由系统内部组件（SQLBuilder/Executor/权限/沙箱）完成，**LLM 不直接调用任何外部工具**。
+
+证据：
+- `nl2dsl/plugin.py` 的 `Plugin`/`Pipeline` 是**图节点扩展**（before/after/replace/add_node），不是 LLM Tool Call。
+- `nl2dsl/protocols.py` 的 `LLMBackend`/`SQLBuilder` 等是**组件接口协议**，不是工具定义。
+- 全项目 grep 无 `bind_tools` / `tool_call` / `function_call`。
+
+面试被问"你们 Agent 支持工具调用吗"，**不要装**，答："当前是编排型 Agent，工具调用是预留了插件扩展点、尚未落地；但我能讲清工具调用的原理和设计。"——装了就崩。
+
+### 二、必须能答的 5 个知识点（通用，岗位必考）
+
+1. **Function Calling 原理**：LLM 不执行函数，只输出结构化的 `tool_call`（函数名 + 参数 JSON），应用侧/框架执行函数后把结果作为新消息回传，LLM 再据此生成最终答案。核心是"模型负责决策，应用负责执行"。
+
+2. **LangChain/LangGraph 的工具绑定**：`bind_tools([...])` 把工具 schema 注入模型，`ToolNode` 在图上执行工具并回填状态。本项目若加工具，天然落在 `graph` 里新增一个 `tool_node`。
+
+3. **MCP（Model Context Protocol）**：Anthropic 提出的开放协议，标准化 LLM 应用与外部工具/数据源的连接，让"一个 MCP server 被多个 LLM 客户端复用"。和传统 Function Calling 的区别：MCP 是"工具即服务/协议"，Function Calling 是"单个应用内嵌函数"。
+
+4. **工具调用的五个工程问题**（H-69 已列）：输入 schema、超时、重试与幂等、权限、审计与结果可信度。
+
+5. **何时用工具调用 vs 固定工作流**：工具调用适合"开放、需要灵活决策、工具种类多且变化"的场景；固定工作流（本项目 Graph）适合"流程确定、强治理、强安全"的场景。本项目的 SQL 生成选择固定 Graph 正是为了可校验、可治理、可审计。
+
+### 三、结合本项目的口径（怎么把短板讲成设计选择）
+
+- **为什么 SQL 不用 Tool Call**：让 LLM 通过"调用 SQL 工具"去查库，等于把"生成+执行 SQL"的黑盒交给模型，不可校验、不可审计、权限不可控——这正是 NL2DSL 要解决的传统 NL2SQL 痛点。所以**SQL 执行走固定 Graph，而不是工具调用，这是刻意的安全选择**。
+
+- **什么场景才需要工具**：外部服务（指标解释 API、搜索、知识库问答），这类"LLM 需要灵活决定调什么"的场景才适合 Tool Call。
+
+- **扩展点在哪**：`plugin.py` 的 `Plugin` 抽象类 + `Pipeline` 钩子，以及 `protocols.py` 的 Protocol 定义了组件契约；给 Agent 加工具应作为新节点/新 Protocol 接入，而不是改核心 Graph。
+
+### 四、高频追问 + 参考答法
+
+- **"你们 Agent 支持工具调用吗？"** → "当前是编排型 Agent，未落地工具调用；SQL 执行刻意走固定 Graph 保证可治理。外部工具场景我预留了插件框架，设计上会作为 Graph 的新节点接入，并处理超时/幂等/权限/审计（对应 H-69）。"
+
+- **"Function Calling 的 JSON 解析失败怎么办？"** → "本项目对 LLM 输出已有三层兜底：正则提取 → 字段补全 → 硬约束修正，同样的思路可迁移到 tool_call 参数解析失败的重试与降级。"
+
+- **"工具调用出错怎么兜底？"** → "定义超时和最大重试；失败分类为可重试/不可重试；最终降级为澄清或人工；每次调用写审计。"
+
+- **"MCP 和 Function Calling 什么关系？"** → "Function Calling 是单应用内嵌函数，MCP 是跨应用的标准协议，让工具 server 可复用；MCP 底层仍可映射到 Function Calling 实现。"
+
+### 五、一句话口径（背下来）
+
+> "本项目是编排型 Agent，LLM 负责意图识别、查询规划和 DSL 生成，执行走固定 Graph 而非工具调用——这是为了可校验、可治理、可审计。工具调用能力我预留了插件扩展点，外部工具场景会作为 Graph 新节点接入，并处理超时、重试、幂等、权限和审计。"
+
+---
+
 ## 面试前最终验收
 
 1. **白板 10 分钟：** 画 `/api/v1/query` 的简单与复杂两条路径，明确 Graph 子图和 Agent 分流。
