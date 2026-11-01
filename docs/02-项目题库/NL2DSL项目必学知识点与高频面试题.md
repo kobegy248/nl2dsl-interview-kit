@@ -123,7 +123,7 @@
 - “post_process 在 Python 内存里分组 TopN/占比，高基数维度分组会爆内存吗？”先分清风险边界是”分组后的组数”而非原始行数（SQL 已 GROUP BY）。看 `query/post_processor.py`（`extract_top_n_per_group` 全量 `sorted`、`calculate_proportion` 全量 `sum`）与 `builder.py:581`（有 post_process 时不加 LIMIT，导致 `limit le=10000` 上限对后处理路径失效）。现状缺口：`selectivity` 标记未在执行前硬拦截、沙箱 EXPLAIN 是启发式预估、后处理纯内存无流式。改进三闸：低基数维度白名单、组数显式上限、分组 TopN 下沉窗口函数。面试把风险说成”已识别+待完善”，勿称已有保障。
 - “`text(expr)` 的信任边界是什么？注册配置被污染怎么办？”
 
-**动手验收：** 用 `configs/metrics.yaml` 中真实注册项手算一个 DSL 对应的 SQL；对照 `tests/unit/test_sql_builder.py`，确认 Join、过滤、排序与 LIMIT。此前的[SQLBuilder 专项复盘](2026-10-13-NL2DSL面试训练复盘与SQLBuilder专项.md)可作题目，但以当前源码为准。
+**动手验收：** 用 `configs/metrics.yaml` 中真实注册项手算一个 DSL 对应的 SQL；对照 `tests/unit/test_sql_builder.py`，确认 Join、过滤、排序与 LIMIT。此前的[SQLBuilder 专项复盘](../05-模拟面试/2026-10-13-NL2DSL面试训练复盘与SQLBuilder专项.md)可作题目，但以当前源码为准。
 
 ## P0-4. LangGraph 真正的节点与循环
 
@@ -252,7 +252,7 @@
 3. **故障 10 分钟：** 解释未知指标、未配置用户、检索过期、沙箱风险、SQL 执行失败各在哪层处理及当前边界。
 4. **证据 5 分钟：** 准备自己确实开发过的函数/提交/测试、一个失败修复案例、一个能复算的评测数字。公司版、开源版、设计方案分别标清。
 
-延伸练习见[深度模拟面试训练](高宇-NL2DSL深度模拟面试训练.md)。该工程目录不是当前资料仓库的一部分，本文引用的源码路径请在 `D:\demo\db-gpt\NL2DSL` 中打开。
+延伸练习见[深度模拟面试训练](../05-模拟面试/高宇-NL2DSL深度模拟面试训练.md)。该工程目录不是当前资料仓库的一部分，本文引用的源码路径请在 `D:\demo\db-gpt\NL2DSL` 中打开。
 
 ## 高级 Agent 开发工程师：压力追问题库
 
