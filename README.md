@@ -46,7 +46,15 @@ docs/
 ## 00-项目资料
 
 - [NL2DSL 项目流程图](<docs/00-项目资料/nl2dsl-project-flow.html>)：交互式架构与查询链路图，浏览器打开。
-- [七层架构图（PNG）](<docs/00-项目资料/架构图/nl2dsl-architecture.png>)：接入 / API / Agent 编排 / LangGraph 管道 / 安全治理 / 数据治理 / 基础设施，由 `nl2dsl-architecture.drawio` 用 draw.io 官方 viewer 渲染。
+- 架构图系列（`docs/00-项目资料/架构图/`，全部为 .drawio 源文件，用 draw.io 打开；PNG 为旧版快照）：
+  1. `nl2dsl-architecture.drawio` — 七层总览架构（接入 / API / Agent 编排 / LangGraph 管道 / 安全治理 / 数据治理 / 基础设施）
+  2. `nl2dsl-02-query-pipeline.drawio` — LangGraph 查询管道：12 个节点、条件边、嵌套子图、人工中断点
+  3. `nl2dsl-03-dsl-sql.drawio` — DSL 模型、LLM 生成与修复链、双层校验、11 步 SQL 构建
+  4. `nl2dsl-04-agent-orchestration.drawio` — Agent 编排：7 类意图、三型计划、子查询并发与聚合、SSE
+  5. `nl2dsl-05-rag-governance.drawio` — RAG 四集合检索、28 条规则优化器、权限、审计反馈、评测体系
+  6. `nl2dsl-06-end-to-end-walkthrough.drawio` — **端到端走查**：一句中文问题，每一步的真实产物（DSL / SQL / 返回）
+  7. `nl2dsl-07-request-timeline.drawio` — 请求时序：前端 / API / Agent / 管道 / LLM / 存储六方交互
+  8. `nl2dsl-08-project-onepager.drawio` — **一页看懂**：痛点与设计选择、技术选型理由、能力边界、规模与质量基线
 
 ## 01-简历
 

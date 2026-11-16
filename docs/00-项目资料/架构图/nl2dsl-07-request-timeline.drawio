@@ -1,0 +1,194 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-timeline" name="07 请求时序">
+    <mxGraphModel dx="2100" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1440" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="一次请求的时序 — 谁在什么时候说话（含失败重试与两条分支）" style="text;html=1;align=left;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="1200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="实线 = 正常路径　虚线 = 失败/可选路径　灰框 = 管道内部连续动作（不产生外部 IO）" style="text;html=1;align=left;fontSize=12;fontColor=#5B6B7F;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="58" width="900" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="L1" value="Web 前端&lt;br&gt;（表格 / SQL / 解释）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="96" width="300" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="FastAPI 路由层&lt;br&gt;/api/v1/query · /query/execute" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=13;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="340" y="96" width="300" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="AgentOrchestrator&lt;br&gt;Planner · Controller · Aggregate" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=13;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="640" y="96" width="300" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" value="LangGraph 查询管道&lt;br&gt;12 个节点 · 条件边 · checkpointer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=13;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="940" y="96" width="300" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="L5" value="LLM（DeepSeek）&lt;br&gt;生成 DSL · 修复 · 解释 · 自检" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=13;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="96" width="300" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="L6" value="存储层&lt;br&gt;Milvus Lite · 业务库 · 审计库" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=13;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1540" y="96" width="320" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lifeline1" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="152" as="sourcePoint" />
+            <mxPoint x="190" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline2" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="152" as="sourcePoint" />
+            <mxPoint x="490" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline3" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="790" y="152" as="sourcePoint" />
+            <mxPoint x="790" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline4" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="152" as="sourcePoint" />
+            <mxPoint x="1090" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline5" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1390" y="152" as="sourcePoint" />
+            <mxPoint x="1390" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline6" value="" style="endArrow=none;html=1;dashed=1;strokeColor=#94A3B8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1700" y="152" as="sourcePoint" />
+            <mxPoint x="1700" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m1" value="1. POST /api/v1/query {question, domain, user_id}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6C8EBF;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="180" as="sourcePoint" />
+            <mxPoint x="490" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="2. 参数校验 / 取 DomainContext（语义层 + 权限 + 连接）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6C8EBF;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="228" as="sourcePoint" />
+            <mxPoint x="790" y="228" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3" value="3. 规则命中意图 → 未命中才调 LLM（兜底）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="790" y="276" as="sourcePoint" />
+            <mxPoint x="1390" y="276" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" value="4. graph.ainvoke(state, thread_id=&quot;sub_sq-1&quot;)　【简单意图直接进管道】" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6C8EBF;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="790" y="328" as="sourcePoint" />
+            <mxPoint x="1090" y="328" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5" value="5. retrieve_hybrid(query, top_k=5) — 4 集合：keywords 3 + 向量 coarse 10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="388" as="sourcePoint" />
+            <mxPoint x="1700" y="388" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6" value="6. 候选 + CrossEncoder 精排 + 阈值 0.5 + 4000 字符预算" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1700" y="440" as="sourcePoint" />
+            <mxPoint x="1090" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7" value="7. prompt = 基线 Schema + 检索知识 + 实体提示 + 问题" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="500" as="sourcePoint" />
+            <mxPoint x="1390" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="8. JSON DSL（三级结构化输出 fallback）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1390" y="552" as="sourcePoint" />
+            <mxPoint x="1090" y="552" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="b1" value="9. 管道内部连续动作（无外部 IO）&lt;br&gt;validate_dsl → permission_check（注入行过滤）&lt;br&gt;→ resolve_semantic（值映射）→ optimize_dsl（28 条）&lt;br&gt;→ confidence（阈值 0.8 / 0.6）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F0F7F0;strokeColor=#82B366;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="950" y="600" width="280" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="m9" value="10. 校验失败 → correct_dsl：错误提词 → 定向 RAG → 重生成（≤3 次）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B85450;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#B85450;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="702" as="sourcePoint" />
+            <mxPoint x="1390" y="702" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10" value="11. confidence &lt; 0.6 → 转澄清；0.6–0.8 → warning 继续" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="744" as="sourcePoint" />
+            <mxPoint x="790" y="744" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="b2" value="12. build_sql（SQLAlchemy Core + sqlglot 转译）&lt;br&gt;→ scan_sql（只读 / 单语句 / 禁注释）&lt;br&gt;→ sandbox_check（EXPLAIN 防全表扫 / 行数 / 超时）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="950" y="756" width="280" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="m11" value="13. 执行 SQL（已带 WHERE 租户 + 行级过滤 + LIMIT）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="856" as="sourcePoint" />
+            <mxPoint x="1700" y="856" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12" value="14. rows（≤ limit，超时中断）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1700" y="904" as="sourcePoint" />
+            <mxPoint x="1090" y="904" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13" value="15. verify_dsl（前 3 行样本自检）+ explain（人话解释）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="960" as="sourcePoint" />
+            <mxPoint x="1390" y="960" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" value="16. UPSERT nl2dsl_audit_log（query_id 主键，同步写）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="1016" as="sourcePoint" />
+            <mxPoint x="1700" y="1016" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" value="17. 返回 state：status / dsl / sql / data / explanation / confidence" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1090" y="1072" as="sourcePoint" />
+            <mxPoint x="790" y="1072" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16" value="18. SSE 事件流：plan / rag / dsl / sql / result / done" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9673A6;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="790" y="1128" as="sourcePoint" />
+            <mxPoint x="490" y="1128" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="19. 渲染表格 + SQL + 中文解释 + 置信度标签" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6C8EBF;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="1180" as="sourcePoint" />
+            <mxPoint x="190" y="1180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="note1" value="复杂意图分支（对比 / 占比 / 关联 / 环比）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fontSize=13;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1256" width="1820" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="note1a" value="Controller 判定 complex → Planner 产出 ComplexPlan → dispatch_sub_queries 拆 2–3 个子查询&lt;br&gt;Phase 1：无依赖子查询 asyncio.gather 并发（信号量 MAX_PARALLEL_SUB_QUERIES=3），各自跑一遍上面全流程（独立 thread_id、独立 state）&lt;br&gt;Phase 2：有依赖的串行执行（如&quot;先查 Top 品类，再查这些品类的退货率&quot;）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="note1">
+          <mxGeometry x="20" y="36" width="900" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="note1b" value="Aggregate 6 种策略：diff / trend_direction / pearson / proportion / sequential_filter / ranking&lt;br&gt;单子查询失败 → 降级为部分结果 + error_code，不整单失败&lt;br&gt;置信度 = 各子查询平均；最终解释走模板拼接（复杂问题不再调 LLM）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F7F5FB;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="note1">
+          <mxGeometry x="940" y="36" width="860" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

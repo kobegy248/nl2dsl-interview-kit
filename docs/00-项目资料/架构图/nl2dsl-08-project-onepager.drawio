@@ -1,0 +1,134 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-onepager" name="08 项目全景">
+    <mxGraphModel dx="2100" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1040" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="一页看懂 NL2DSL — 它到底解决什么问题、怎么做的、哪里没做" style="text;html=1;align=left;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="1200" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pos" value="一句话定位：把中文业务问题翻译成可审计 SQL 的「数据语义层 + Agent 编排 + 安全护栏」。&lt;br&gt;LLM 只负责把自然语言翻成结构化 DSL，校验、权限、优化、执行、留痕全部由确定性代码完成 —— 所以它敢上生产。" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1F2937;strokeColor=#1F2937;fontSize=14;fontColor=#FFFFFF;align=left;spacingLeft=24;spacingTop=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="72" width="1820" height="76" as="geometry" />
+        </mxCell>
+
+        <mxCell id="P" value="① 五个真实痛点 → 五个设计选择" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="168" width="580" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="口径不一致&lt;br&gt;「销售额」到底是 SUM 还是含退款？" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="20" y="42" width="250" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p1r" value="语义层固化口径&lt;br&gt;metrics.yaml 定义 expr，terms.yaml 收别名&lt;br&gt;LLM 不许自行发明指标" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="300" y="42" width="260" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="业务人员不会写 SQL&lt;br&gt;需求排队等数据开发" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="20" y="116" width="250" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p2r" value="中文 → DSL → SQL&lt;br&gt;LLM 只翻成 JSON DSL，不直接产出 SQL&lt;br&gt;值映射把「华东」翻成 HD" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="300" y="116" width="260" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="权限失控&lt;br&gt;一句「查全部客户」就越权" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="20" y="190" width="250" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p3r" value="结构化注入，不靠提示词&lt;br&gt;行级 Filter 追加 + 列级敏感列拦截 + 租户强制&lt;br&gt;LLM 无法绕过 filters 数组" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="300" y="190" width="260" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="结果不可信 / 不可解释&lt;br&gt;错了不知道错在哪" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="20" y="264" width="250" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p4r" value="三层可核查&lt;br&gt;双层校验 + 0–1 置信度（&lt;0.6 转澄清）&lt;br&gt;中文解释 + 审计按 query_id 回放" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="300" y="264" width="260" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" value="质量不可量化&lt;br&gt;改一版 prompt 不知道变好还是变坏" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="20" y="338" width="250" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="p5r" value="12 维评测 + V2 五维 + baseline 回归门禁&lt;br&gt;规则优化器可单测，可做 on/off 矩阵对比" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="P">
+          <mxGeometry x="300" y="338" width="260" height="48" as="geometry" />
+        </mxCell>
+
+        <mxCell id="T" value="② 为什么这么选（每条都是被问题逼出来的）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="588" width="580" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" value="LangGraph　需要条件边 + 子图 + interrupt_before 人工审核 + checkpointer&lt;br&gt;纯链式 LCEL 表达不了「校验失败回退重生成」这种环" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="T">
+          <mxGeometry x="20" y="42" width="540" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" value="Pydantic DSL　给 LLM 输出加硬约束，model_validate 一失败就重试&lt;br&gt;同时是校验层、优化层、SQL 层之间唯一的契约" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="T">
+          <mxGeometry x="20" y="112" width="540" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" value="SQLAlchemy Core + sqlglot　参数化绑定 + 标识符白名单，天然防注入&lt;br&gt;同一份 DSL 换 dialect 就能跑 MySQL / PG / SQLite" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="T">
+          <mxGeometry x="20" y="182" width="540" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="t4" value="Milvus Lite + BGE-base-zh（768 维）+ jieba + CrossEncoder&lt;br&gt;本地零运维；关键词通道兜住业务黑话，精排兜住误召回" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="T">
+          <mxGeometry x="20" y="252" width="540" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="t5" value="规则优化器不调 LLM　28 条规则是确定性的：可单测、可回归、可解释&lt;br&gt;还能做 optimizer on/off 的 A/B 对比，量化每条规则的价值" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="T">
+          <mxGeometry x="20" y="322" width="540" height="58" as="geometry" />
+        </mxCell>
+
+        <mxCell id="N" value="③ 五张图怎么读（按顺序看就懂了）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="168" width="560" height="820" as="geometry" />
+        </mxCell>
+        <mxCell id="n1" value="01 总览七层架构&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;先建立全景：从接入到数据库有哪几层&lt;/font&gt;&lt;br&gt;看这张知道「东西在哪儿」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="44" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="02 查询管道&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;12 个节点 + 条件边 + 子图 + 中断点&lt;/font&gt;&lt;br&gt;看这张知道「一次查询怎么一步步走下去」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="146" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="03 DSL 与 SQL&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;模型字段、LLM 生成修复链、双层校验、11 步 SQL 构建&lt;/font&gt;&lt;br&gt;看这张知道「翻译这一步到底怎么保证不出错」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="248" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="04 Agent 编排&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;7 意图、三型计划、子查询并发与聚合、SSE&lt;/font&gt;&lt;br&gt;看这张知道「复杂问题怎么拆、怎么并发、怎么合并」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="350" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="05 RAG 与治理&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;四集合检索、28 条规则、权限、审计、评测&lt;/font&gt;&lt;br&gt;看这张知道「凭什么安全、凭什么能持续改好」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="452" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="06 端到端走查&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;一句真实问题，每一步的真实产物（DSL / SQL / 返回）&lt;/font&gt;&lt;br&gt;看这张最直观：不懂技术也能看懂发生了什么" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="554" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="07 请求时序&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;前端 / API / Agent / 管道 / LLM / 存储 六方对话&lt;/font&gt;&lt;br&gt;看这张知道「谁在什么时候说话、失败怎么退」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=8;" vertex="1" parent="N">
+          <mxGeometry x="20" y="656" width="520" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="读法建议：01 → 06 → 02 → 07 → 03 → 04 → 05&lt;br&gt;先看「是什么」，再看「怎么走」，最后看「凭什么」" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F5F5F5;strokeColor=#666666;dashed=1;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=14;spacingTop=6;" vertex="1" parent="N">
+          <mxGeometry x="20" y="758" width="520" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="B" value="④ 能力边界：哪些能说「我做过」，哪些只能说「我知道怎么做」" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="168" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="✅ 已实现（有代码证据）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=12;fontStyle=1;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="B">
+          <mxGeometry x="20" y="42" width="560" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="7 类配置化意图 · 三型 ExecutionPlan · 子查询并发与 6 种聚合&lt;br&gt;RAG 四集合混合检索 + CrossEncoder 精排 + 4000 字符预算&lt;br&gt;双层校验 · 28 条规则优化器 · 0–1 置信度门禁&lt;br&gt;行级注入 / 列级拦截 / SQLScanner / 沙箱 / 审计 UPSERT&lt;br&gt;12 维评测 + V2 五维 benchmark + baseline 回归对比" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="B">
+          <mxGeometry x="20" y="76" width="560" height="118" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="❌ 未实现（只能讲设计，不能说做过）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=12;fontStyle=1;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="B">
+          <mxGeometry x="20" y="208" width="560" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="多轮记忆：澄清是一次性的，不支持追问回填&lt;br&gt;工具调用 / MCP：没有外部工具编排&lt;br&gt;结果脱敏：mask() 写了，但没接进主链路&lt;br&gt;反馈回灌：FeedbackProcessor 是 stub，阈值 3 只打日志&lt;br&gt;登录认证：没有 JWT / RBAC，user_id 由调用方传&lt;br&gt;RAG 召回评估：没有 Recall / MRR / nDCG" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="B">
+          <mxGeometry x="20" y="242" width="560" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="Q" value="⑤ 规模与质量基线（数字都带来源，不吹）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="588" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="q1" value="22,286 行 Python　123 个文件　19 个模块　120 个测试文件&lt;br&gt;（find nl2dsl -name &quot;*.py&quot; 统计，不含 web 前端与 .venv）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="Q">
+          <mxGeometry x="20" y="42" width="560" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="q2" value="最近一批评测（2026-06-01，50 用例，真实 LLM 链路）&lt;br&gt;综合 69.7% · 通过率 68%（34 / 50）&lt;br&gt;Semantic 73.9% · Planning 68.9% · Execution 58.5% · Governance 70.0%" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="Q">
+          <mxGeometry x="20" y="112" width="560" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="q3" value="V2 矩阵评测（2026-06-20，10 用例 / 域）&lt;br&gt;按 generator × optimizer 出矩阵：rule+off / rule+on 对比&lt;br&gt;指标：intent / metric / filter / planner / governance + P50 / P95" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="Q">
+          <mxGeometry x="20" y="196" width="560" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="q4" value="10 层防御：问题校验 → 意图约束 → RAG 白名单 → DSL 硬校验&lt;br&gt;→ 权限注入 → 规则优化 → 置信度 → SQL 扫描 → 沙箱 → 审计&lt;br&gt;任意一层拦下，都不会有一条越权 SQL 打到数据库" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="Q">
+          <mxGeometry x="20" y="280" width="560" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="q5" value="诚实说明：69.7% 是「语义 + 执行 + 治理」综合分，不是准确率；&lt;br&gt;Execution 58.5% 偏低，主因是样本库与真实库数据分布不一致" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;dashed=1;fontSize=11;fontColor=#334155;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="Q">
+          <mxGeometry x="20" y="360" width="560" height="34" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
