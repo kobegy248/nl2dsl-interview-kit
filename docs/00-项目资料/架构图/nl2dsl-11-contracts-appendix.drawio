@@ -1,0 +1,194 @@
+<mxfile host="app.diagrams.net" modified="2026-11-17T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-contracts" name="11 契约与类型附录">
+    <mxGraphModel dx="2100" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="契约与类型附录 — 接口、数据类、异常码、规范化、替身" style="text;html=1;align=left;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="1400" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="前面 10 张讲「怎么做」，这张补「接口长什么样、内部类型怎么落地」——面试被问到具体字段时用。" style="text;html=1;align=left;fontSize=12;fontColor=#5B6B7F;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1400" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="A" value="① HTTP 接口全表（15 个端点）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="查询主链路&lt;br&gt;POST /api/v1/query　　同步返回&lt;br&gt;POST /api/v1/query/stream　SSE 流式&lt;br&gt;POST /api/v1/query/resume　HITL 恢复（human_review 后继续）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="A">
+          <mxGeometry x="20" y="42" width="560" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="只做一步&lt;br&gt;POST /api/v1/query/dsl　　　只生成 DSL，不执行&lt;br&gt;POST /api/v1/query/execute　执行给定 DSL（评测对比用）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="A">
+          <mxGeometry x="20" y="116" width="560" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="元数据&lt;br&gt;GET /api/v1/schema　　GET /api/v1/metrics" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="A">
+          <mxGeometry x="20" y="176" width="560" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="反馈&lt;br&gt;POST /api/v1/feedback&lt;br&gt;GET /api/v1/admin/feedback　　GET /api/v1/admin/feedback/{feedback_id}" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="A">
+          <mxGeometry x="20" y="228" width="560" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="运维 / 审计&lt;br&gt;GET /health　　GET /api/v1/admin/enums　　POST /api/v1/admin/enums/refresh&lt;br&gt;GET /api/v1/admin/audit/queries　　GET /api/v1/admin/audit/queries/{query_id}" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="A">
+          <mxGeometry x="20" y="288" width="560" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" value="注意：admin 系列没有鉴权中间件 —— user_id 由调用方传入（真实缺口，已在 08 图标注）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="A">
+          <mxGeometry x="20" y="352" width="560" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="B" value="② 请求 / 响应模型族（Pydantic）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="90" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="QueryRequest：question · domain · user_id · tenant_id（可选覆盖）&lt;br&gt;QueryResponse：status · dsl · sql · data · explanation · confidence&lt;br&gt;　　　　　　　· query_id · error_code（失败时）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="20" y="42" width="560" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="DSLGenerateResponse：dsl · llm_used · trace&lt;br&gt;DSLExecuteRequest：dsl · user_id · domain　DSLExecuteResponse：data · sql" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="20" y="110" width="560" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="ClarificationResponse：status=clarification · ambiguities · candidate 列表&lt;br&gt;ResumeRequest：query_id / thread_id · decision（approve / reject）&lt;br&gt;StreamRequest：question · domain · user_id" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="20" y="170" width="560" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="SchemaResponse · MetricsResponse · EnumsResponse · RefreshEnumsResponse&lt;br&gt;FeedbackRequest（is_correct · issue_type · corrected_dsl · comment）· FeedbackResponse&lt;br&gt;AuditQueryListResponse / AuditQueryListItem · AuditQueryDetailResponse / Item" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="20" y="238" width="560" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" value="约定：所有错误都走同一响应结构，错误码在 error_code 字段；&lt;br&gt;HTTP status 由异常类的 status_code 决定（见 ⑤）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="20" y="308" width="560" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="C" value="③ 运行时语义解析（不是评测里的 canonical）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="90" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="SemanticResolver（semantic/resolver.py）—— resolve_semantic 节点用&lt;br&gt;_resolve_metrics：alias → registry expr，正则拆 func/field&lt;br&gt;　&quot;AVG(order_amount)&quot; → func=avg, field=order_amount&lt;br&gt;alias 未注册 → 直接抛 SemanticError（不是警告）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="C">
+          <mxGeometry x="20" y="42" width="560" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="_resolve_filters：只处理 list，不处理 FilterTreeNode&lt;br&gt;值**刻意保留语义**（&quot;华东&quot; 不转 &quot;HD&quot;）—— 翻译在 SQLBuilder&lt;br&gt;原因：评测与回放要求 DSL 保持人类可读的中文口径" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="C">
+          <mxGeometry x="20" y="114" width="560" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="EntityResolver（agent/resolver.py）—— 路由层实体识别&lt;br&gt;resolve_metric · resolve_dimension · resolve_dimension_value（扫 value_map 精确键）&lt;br&gt;resolve(question) → ResolvedEntity（metric / dimension / value / 其它）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="C">
+          <mxGeometry x="20" y="182" width="560" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="其它运行时类型&lt;br&gt;SemanticRegistry（semantic/registry.py）：metrics / dimensions / data_sources&lt;br&gt;query/time_resolver.py：TimeResolver → ResolvedTime（相对时间 → 绝对区间，依赖 reference_date）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="C">
+          <mxGeometry x="20" y="250" width="560" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="容易混的两个名字：resolve_semantic 节点用的是 SemanticResolver；&lt;br&gt;evaluation/canonical 下那 6 个 Resolver 是评测用的，别在面试里说岔" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;dashed=1;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="C">
+          <mxGeometry x="20" y="318" width="560" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="D" value="④ 规则类的数据结构（optimizer/base.py）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="BaseRule（ABC）　metadata: RuleMetadata&lt;br&gt;check(ctx) → RuleResult　｜　fix(ctx, result) → DSL&lt;br&gt;28 条规则各是一个子类，靠 metadata 声明优先级与严重度" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="20" y="42" width="560" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="RuleResult 字段（面试问&quot;命中长什么样&quot;就用这个）&lt;br&gt;error_code · category · severity（Fix / Warn / Reject）&lt;br&gt;confidence（high / medium / low）· is_fatal · description&lt;br&gt;before / after · location（如 &quot;metrics[0].func&quot;）· applied&lt;br&gt;clarification_required / clarification_question / candidate_values" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="20" y="104" width="560" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="RuleMetadata：error_code · category · severity · confidence&lt;br&gt;is_fatal · auto_fixable · priority（1–6）&lt;br&gt;只有 auto_fixable 且 severity=Fix 才会真正改 DSL" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="20" y="198" width="560" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="RuleContext：dsl · semantic_config · original_question&lt;br&gt;user_id · permission_config · reference_date · max_limit&lt;br&gt;规则不碰全局状态，全部依赖从 ctx 传入 → 可单测" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="20" y="264" width="560" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="RuleRegistry.build_priority_queue：按 priority 分 6 层、层内按注册顺序&lt;br&gt;跑完一层再跑下一层，保证 P1 拦截先于 P6 澄清" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="20" y="330" width="560" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="E" value="⑤ 异常体系 → error_code → HTTP status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF4F4;strokeColor=#B85450;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="520" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="NL2DSLException（基类，error_code = INTERNAL_ERROR，500）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=11;fontStyle=1;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="E">
+          <mxGeometry x="20" y="42" width="560" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="ValidationError　→ VALIDATION_ERROR　400&lt;br&gt;PermissionError → PERMISSION_DENIED　403&lt;br&gt;SemanticError　 → SEMANTIC_ERROR　　400&lt;br&gt;QueryError　　　→ QUERY_ERROR　　　 400" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="E">
+          <mxGeometry x="20" y="84" width="560" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="LLMError　　　→ LLM_ERROR　　　 502&lt;br&gt;NotFoundError → NOT_FOUND　　　 404&lt;br&gt;MaxRetryExceeded：DSL 生成/修复超过重试次数（3 次）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="E">
+          <mxGeometry x="20" y="154" width="560" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="路由函数 route_on_error 的 fatal 集合（直接终止，不再重试）&lt;br&gt;PERMISSION_DENIED · UNAUTHORIZED · INTERNAL_ERROR&lt;br&gt;其余错误码走恢复路径或降级返回" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="E">
+          <mxGeometry x="20" y="216" width="560" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="对外表现：HTTP status + QueryResponse.error_code + error_message&lt;br&gt;审计表 nl2dsl_audit_log 同步记 status / error_code / trace" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="E">
+          <mxGeometry x="20" y="282" width="560" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="一句话：错误分层清楚 —— 语义错 400、权限错 403、模型错 502、内部错 500，&lt;br&gt;前端能据此决定是让用户改问题还是等重试" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;dashed=1;fontSize=10.5;fontColor=#334155;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="E">
+          <mxGeometry x="20" y="340" width="560" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="F" value="⑥ 评测规范化 canonical（为什么分数可比）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="520" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" value="问题：同一语义有多种写法 —— alias 有无、dimensions 顺序、&lt;br&gt;值的大小写 / 字符串型数字、join 别名不同、order_by 顺序&lt;br&gt;直接比对会把&quot;对的&quot;判成&quot;错的&quot;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="F">
+          <mxGeometry x="20" y="42" width="560" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" value="CanonicalResolver → CanonicalQuery&lt;br&gt;metrics · dimensions · filters · joins · order_by · time_range · limit" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="F">
+          <mxGeometry x="20" y="106" width="560" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" value="六个子解析器（evaluation/canonical/）&lt;br&gt;MetricResolver（func+field+alias 归一）· DimensionResolver（排序去重）&lt;br&gt;ValueResolver（值归一：数字 / 布尔 / 字符串）&lt;br&gt;JoinResolver → CanonicalJoin（table + on + type + alias）&lt;br&gt;OrderResolver → CanonicalOrderBy　TimeResolver → CanonicalTimeRange" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="F">
+          <mxGeometry x="20" y="162" width="560" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" value="打分结构：ScoreBreakdown（12 维）/ V2ScoreBreakdown（五维）&lt;br&gt;0.8 阈值判定 pass / fail；按 domain / tag / matrix 聚合" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="F">
+          <mxGeometry x="20" y="250" width="560" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" value="这是评测能&quot;讲道理&quot;的关键：先统一表示，再逐维比，&lt;br&gt;不是拿两段 SQL 字符串 diff" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;dashed=1;fontSize=10.5;fontColor=#334155;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="F">
+          <mxGeometry x="20" y="306" width="560" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="G" value="⑦ LLM 接入与结构化输出" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="950" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="g1" value="ProviderConfig：name · base_url · model · api_key&lt;br&gt;LLMProviderRegistry：register / get_llm_client / set_active_provider&lt;br&gt;list_providers / describe_providers（运行时可切换）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="G">
+          <mxGeometry x="20" y="42" width="560" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" value="prompts.py：DSL_SYSTEM_PROMPT（角色 + 硬约束）&lt;br&gt;build_user_prompt(question, context) → 5 段拼接&lt;br&gt;DSL_JSON_SCHEMA（宽松）/ DSL_JSON_SCHEMA_STRICT（严格）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="G">
+          <mxGeometry x="20" y="106" width="560" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="g3" value="三级 fallback（真实踩坑：deepseek 不支持 strict json_schema）&lt;br&gt;① response_format=strict json_schema&lt;br&gt;② 失败 → json_object&lt;br&gt;③ 再失败 → 纯文本 + 正则/括号配平抽取 JSON" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="G">
+          <mxGeometry x="20" y="168" width="560" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="g4" value="LLMClient：超时 + 重试 + 统一异常（失败抛 LLMError → 502）&lt;br&gt;无 LLM 时整体降级为 RuleBasedDSLGenerator（测试与演示用）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="G">
+          <mxGeometry x="20" y="238" width="560" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="g5" value="面试说法：不是&quot;调了个模型&quot;，是&quot;三层降级 + 结构化约束 + 失败可观测&quot;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;dashed=1;fontSize=10.5;fontColor=#334155;align=left;spacingLeft=10;" vertex="1" parent="G">
+          <mxGeometry x="20" y="296" width="560" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="H" value="⑧ 质量报告：从 trace 判定这条查询走没走对" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="950" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="h1" value="quality/analyzer.py：汇总 Evaluation / Audit / Feedback 三类数据&lt;br&gt;不用人工标注，直接从审计表的 trace 反推运行质量" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="H">
+          <mxGeometry x="20" y="42" width="560" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" value="成功路径要求（SUCCESS_PATH_NODES，6 个节点必须都出现）&lt;br&gt;generate_dsl → validate_dsl → resolve_semantic&lt;br&gt;→ build_sql → scan_sql → execute_sql&lt;br&gt;另：OPTIMIZER_NODE = optimize_dsl（单独统计命中率）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="H">
+          <mxGeometry x="20" y="96" width="560" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="h3" value="特殊路径&lt;br&gt;CLARIFICATION_NODES = [&quot;clarification&quot;]&lt;br&gt;AGENT_NODE = &quot;agent&quot;，且 AGENT_EXECUTION_NODES 里至少出现一条：&lt;br&gt;build_sql / execute_sql / scan_sql / sub_query / sub_query_start / sub_query_end&lt;br&gt;（防止&quot;只有一个 agent 节点&quot;被误判为完整复杂链路）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="H">
+          <mxGeometry x="20" y="174" width="560" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="h4" value="延迟统计：_percentile 线性插值算 P50 / P95&lt;br&gt;输出 quality_report.md / json：路径完整率 · 节点缺失分布 · 失败归因" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="H">
+          <mxGeometry x="20" y="252" width="560" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="h5" value="价值：不跑评测也能看生产质量 —— 审计表里每条 trace 都能被判一次" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;dashed=1;fontSize=10.5;fontColor=#334155;align=left;spacingLeft=10;" vertex="1" parent="H">
+          <mxGeometry x="20" y="306" width="560" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="I" value="⑨ 测试替身与覆盖（无 LLM 也能跑通全链路）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="950" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="i1" value="tests/ 共 120 个测试文件（pytest）&lt;br&gt;单元：规则、校验、SQLBuilder、规范化&lt;br&gt;集成：graph 全链路（LLM 用替身）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="I">
+          <mxGeometry x="20" y="42" width="560" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="i2" value="替身清单&lt;br&gt;MockEmbedder（384 维，不加载 BGE）· MockReranker（恒返回原分）&lt;br&gt;FakeEvaluationExecutor（返回预置结果，不连库）&lt;br&gt;RuleBasedDSLGenerator（无 LLM 时的生成器）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="I">
+          <mxGeometry x="20" y="102" width="560" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="i3" value="真实 LLM 的 e2e 单独跑（耗时长、需 key），不进默认单测；&lt;br&gt;这也是为什么部分 V2 报告延迟是 0.0 ms —— 走的是规则生成路径" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="I">
+          <mxGeometry x="20" y="174" width="560" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="i4" value="代价与取舍（诚实说）&lt;br&gt;替身让 CI 快、稳定，但测不出模型行为差异；&lt;br&gt;模型层的问题只能靠真实链路评测发现" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="I">
+          <mxGeometry x="20" y="234" width="560" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="i5" value="面试口径：&quot;120 个测试文件，核心链路可以在没有模型的情况下回归&quot;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;dashed=1;fontSize=10.5;fontColor=#334155;align=left;spacingLeft=10;" vertex="1" parent="I">
+          <mxGeometry x="20" y="294" width="560" height="32" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

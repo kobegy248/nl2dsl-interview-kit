@@ -57,6 +57,7 @@ docs/
   8. `nl2dsl-08-project-onepager.drawio` — **一页看懂**：痛点与设计选择、技术选型理由、能力边界、规模与质量基线
   9. `nl2dsl-09-code-map.drawio` — **代码地图**：图上的层 ↔ 目录 ↔ 文件 ↔ 类/函数，四级下钻路径
   10. `nl2dsl-10-eval-heatmap.drawio` — **评测矩阵热力图**：各域各维度得分、优化器 on/off 对比、12 维逐项与使用边界
+  11. `nl2dsl-11-contracts-appendix.drawio` — **契约与类型附录**：15 个接口、请求响应模型、语义解析器、规则数据结构、异常码、评测规范化、LLM 降级、质量报告、测试替身
 
 ## 01-简历
 
