@@ -1,0 +1,157 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-agent" name="04 Agent 编排">
+    <mxGraphModel dx="2100" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1960" pageHeight="1440" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="A" value="① 入口 — AgentOrchestrator.run（agent/orchestrator.py）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="async run(question, user_id, tenant_id, domain, sse_callback)&lt;br&gt;返回 AgentResult&lt;br&gt;trace 首条 {step: &quot;agent&quot;, status: &quot;start&quot;}" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="A">
+          <mxGeometry x="30" y="45" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="_get_domain_context(domain)&lt;br&gt;domain 不存在 → 回退 ecommerce → 第一个域&lt;br&gt;都没有 → RuntimeError" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="A">
+          <mxGeometry x="470" y="45" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="_extract_entities(question)（静态）&lt;br&gt;仅用硬编码关键词表&lt;br&gt;（run 内未传 registry_dict）&lt;br&gt;失败 → AgentResult(status=&quot;error&quot;)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="A">
+          <mxGeometry x="910" y="45" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="await controller.route(question, entities)&lt;br&gt;得到三种 ExecutionPlan 之一&lt;br&gt;异常 → AgentResult(status=&quot;error&quot;)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="A">
+          <mxGeometry x="1350" y="45" width="440" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="B" value="② Planner 意图识别（agent/planner.py）— 规则与 LLM 双路，规则兜底" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF8EE;strokeColor=#D79B00;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="1820" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="Step 1　rule_plan = _rule_based_plan(question)&lt;br&gt;IntentRegistry.get_intent_by_keywords&lt;br&gt;按 intents.yaml 顺序、大小写不敏感&lt;br&gt;首个命中即返回；未命中 → single_query" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="30" y="45" width="520" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="Step 2　有 LLM → _llm_plan(question, registry_dict)&lt;br&gt;优先 llm.agenerate，否则 llm.generate&lt;br&gt;→ _parse_llm_plan（兼容 markdown fence / 首尾大括号）&lt;br&gt;Step 3　LLM 判 single_query 但规则判其它 → 用规则结果覆盖&lt;br&gt;Step 4　LLM 异常 / 空 / 解析失败 → 返回 rule_plan" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="580" y="45" width="600" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="7 种意图与分解策略（intents.yaml → _decompose_by_intent）&lt;br&gt;compare　　　→ split_by_objects（按对象拆子查询）&lt;br&gt;trend　　　　→ single_with_time_grouping&lt;br&gt;correlation　→ split_by_objects&lt;br&gt;proportion　 → total_plus_groups&lt;br&gt;sequential　 → YAML 有配置，代码无分支，实际 passthrough&lt;br&gt;ranking　　　→ single_with_ordering&lt;br&gt;single_query → passthrough" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="B">
+          <mxGeometry x="1210" y="40" width="580" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="Plan 模型：intent · sub_queries · reasoning · requires_approval&lt;br&gt;SubQuery：id · dsl · depends_on · description" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFDF5;strokeColor=#D6B656;strokeWidth=1;fontSize=11;fontColor=#5B6B7F;align=left;spacingLeft=10;" vertex="1" parent="B">
+          <mxGeometry x="30" y="140" width="1150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="C" value="③ AgentController 分流（无枚举，靠 Pydantic 类型 + 意图串 + 实体是否非空）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="ComplexExecutionPlan&lt;br&gt;条件：plan.intent != single_query&lt;br&gt;7 种意图里除 single_query 全部走这里" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="C">
+          <mxGeometry x="30" y="45" width="420" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="SimpleExecutionPlan&lt;br&gt;条件：intent == single_query 且&lt;br&gt;entities.metrics 与 entities.dimensions 均非空" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="C">
+          <mxGeometry x="480" y="45" width="420" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="ExplorationPlan&lt;br&gt;条件：single_query 但实体不全&lt;br&gt;exploration_steps 三条：Analyze query /&lt;br&gt;Identify relevant metrics and dimensions /&lt;br&gt;Explore available data sources&lt;br&gt;（_run_exploration_path 直接委托 simple 路径，MVP）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="C">
+          <mxGeometry x="930" y="35" width="420" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="Planner 异常兜底 _fallback_intent&lt;br&gt;metrics 或 dimensions 数 &gt; 1 → compare&lt;br&gt;entities.time_range 非空 → trend&lt;br&gt;否则 → single_query&lt;br&gt;回退时 plan 为 None，Controller 补单子查询 Plan" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="C">
+          <mxGeometry x="1380" y="35" width="410" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="D" value="④ 复杂路径 — 并行分发 · 意图驱动聚合 · 模板解释（orchestrator + dispatcher + aggregator + explainer）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F9F1;strokeColor=#82B366;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="710" width="1820" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="dispatch_sub_queries(sub_queries, domain_context, base_state)&lt;br&gt;MAX_PARALLEL_SUB_QUERIES = 3&lt;br&gt;asyncio.Semaphore(3) + asyncio.gather&lt;br&gt;Phase1：depends_on 为空的独立子查询全部并行&lt;br&gt;Phase2：依赖满足（dep_id 都在 results）后串行执行&lt;br&gt;无超时控制（无 wait_for / timeout）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="30" y="45" width="520" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="失败与依赖处理&lt;br&gt;子查询异常 → QueryResult(status=&quot;error&quot;, error)&lt;br&gt;依赖项 error → &quot;Dependency failed: [...]&quot;&lt;br&gt;无 ready（缺依赖 / 环）→ &quot;Unsatisfied dependencies: [...]&quot;&lt;br&gt;warning / clarification 不算失败，继续下游&lt;br&gt;状态白名单 5 种，未知归一为 success" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="580" y="45" width="520" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="Aggregate.run(results, intent) — _STRATEGIES 映射&lt;br&gt;compare → 按 __sub_query_id 分组求和 + diff / growth_rate / pairwise&lt;br&gt;trend → 按 month·date·year·quarter·week·day 排序，up / down / flat&lt;br&gt;correlation → 每行前两个数值列 Pearson&lt;br&gt;proportion → 取行数最多组，生成 {metric}_proportion&lt;br&gt;ranking → 首个数值指标降序&lt;br&gt;single_query → rows 透传；sequential → 未注册，回退 _aggregate_single" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="D">
+          <mxGeometry x="1130" y="35" width="660" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="confidence = 仅统计非 None 子查询置信度的简单平均（非加权）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="D">
+          <mxGeometry x="30" y="175" width="520" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="_generate_template_explanation（Orchestrator 不走 LLM explain）&lt;br&gt;compare 用 plan.sub_queries + sub_results；clarification / warning 子查询追加质量提示" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="D">
+          <mxGeometry x="580" y="175" width="520" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="d6" value="终态判定&lt;br&gt;有 failed / clarified / warnings → status = warning&lt;br&gt;否则 success；全部不可执行 → error「All sub-queries blocked」&lt;br&gt;复杂路径不填 dsl / sql" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="D">
+          <mxGeometry x="1130" y="190" width="660" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="E" value="⑤ 简单路径 — 直接进 LangGraph（单个子查询）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="1820" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="构造 Plan(intent=&quot;single_query&quot;, sub_queries=[SubQuery(id=&quot;sq-1&quot;, description=question, depends_on=[])])&lt;br&gt;_build_query_state → graph.ainvoke(state, config={&quot;configurable&quot;: {&quot;thread_id&quot;: &quot;sub_sq-1&quot;}})" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=4;" vertex="1" parent="E">
+          <mxGeometry x="30" y="45" width="700" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="子查询统一走同一套 QueryState&lt;br&gt;预置 Plan 防止 graph 的 plan 节点二次分类" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="E">
+          <mxGeometry x="760" y="45" width="430" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="AgentResult(data, dsl, sql, explanation, confidence, plan, trace)&lt;br&gt;graph 返回 error / clarification → 原样透传状态" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="E">
+          <mxGeometry x="1220" y="45" width="570" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="F" value="⑥ 支撑：SSE 事件 · 反馈学习 · 数据结构" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF4F4;strokeColor=#B85450;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1210" width="1820" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" value="SSE event_type（sse_callback 推送）&lt;br&gt;plan → sub_query_start → sub_query_result →&lt;br&gt;aggregate → explain；异常 → error" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="F">
+          <mxGeometry x="30" y="45" width="480" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" value="FeedbackProcessor（feedback_processor.py）&lt;br&gt;MIN_CORRECTION_FREQUENCY = 3&lt;br&gt;从 corrected_dsl 提取 metric_alias / filter 两类模式&lt;br&gt;_update_term_weights 为 MVP stub：只打日志，不写 terms.yaml" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="F">
+          <mxGeometry x="540" y="45" width="640" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" value="模型全部是 Pydantic BaseModel（非 dataclass）&lt;br&gt;Entities：metrics · dimensions · time_range&lt;br&gt;QueryResult：sub_query_id · data · status · error · confidence · explanation&lt;br&gt;AgentState 是 TypedDict" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="F">
+          <mxGeometry x="1210" y="40" width="580" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ae1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="a1" target="a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="a2" target="a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="a3" target="a4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae4" value="planner.plan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b1" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae5" value="纯规则 fallback" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D79B00;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" parent="1" source="b1" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae6" value="7 种意图" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="b2" target="c1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="505" />
+              <mxPoint x="280" y="505" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae7" value="single_query 且实体齐全" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F7F5FB;" edge="1" parent="1" source="c1" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae8" value="简单路径（单查询）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c2" target="e1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="730" y="1005" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae9" value="复杂路径" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D79B00;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c1" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae10" value="并行 / 串行结果" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;" edge="1" parent="1" source="d1" target="d3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="695" />
+              <mxPoint x="1460" y="695" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae11" value="聚合结果 → 解释" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="d3" target="d5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae12" value="置信度平均" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;" edge="1" parent="1" source="d1" target="d4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

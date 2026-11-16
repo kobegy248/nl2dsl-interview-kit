@@ -1,0 +1,158 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-dsl-sql" name="03 DSL 与 SQL">
+    <mxGraphModel dx="2100" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1960" pageHeight="1360" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="A" value="① DSL 数据模型 — nl2dsl/dsl/models.py（Pydantic）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F9F1;strokeColor=#82B366;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="600" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="class DSL（顶层，无 QueryDSL）&lt;br&gt;metrics: list[Aggregation] | None&lt;br&gt;dimensions: list[str] | None　（只有名称，无 Dimension 类）&lt;br&gt;filters: list[Filter] | FilterTreeNode | None&lt;br&gt;having: list[Having] | None&lt;br&gt;order_by: list[OrderBy] | None&lt;br&gt;limit: int = 100，le=10000&lt;br&gt;offset: int = 0，ge=0&lt;br&gt;data_source: str（必填）&lt;br&gt;time_field: str | None&lt;br&gt;time_range: tuple[str, str] | None&lt;br&gt;joins: list[Join] | None&lt;br&gt;post_process: PostProcess | None" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="A">
+          <mxGeometry x="20" y="42" width="560" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="内置 model_validator（容错归一）&lt;br&gt;_coerce_filters：dict → FilterTreeNode，list → Filter&lt;br&gt;_coerce_time_range：list → tuple&lt;br&gt;_coerce_having / _coerce_model_list" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="A">
+          <mxGeometry x="20" y="280" width="560" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="附属模型&lt;br&gt;Aggregation　func ∈ sum / avg / count / min / max，field，alias&lt;br&gt;Filter　field，operator ∈ = != &gt; &lt; &gt;= &lt;= between in like is_null，value&lt;br&gt;FilterLeaf(Filter)　树中叶子；FilterTreeNode　op ∈ and / or / not，children 递归&lt;br&gt;Having(Filter)　field 语义上是 metric alias&lt;br&gt;OrderBy　field，direction ∈ asc / desc&lt;br&gt;Join　table，on_field，join_type ∈ inner / left / right，alias&lt;br&gt;PostProcess　type ∈ group_top_n / proportion，metric，group_by，top_n 1..100，direction，output_field&lt;br&gt;ClarificationItem　type / question / options" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#EAF6EA;strokeColor=#82B366;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="A">
+          <mxGeometry x="20" y="368" width="560" height="172" as="geometry" />
+        </mxCell>
+
+        <mxCell id="B" value="② LLM 生成与修复链 — graph/nodes.py + llm/prompts.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF8EE;strokeColor=#D79B00;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="680" y="80" width="600" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="_build_generation_prompt 组装顺序&lt;br&gt;【表结构】data_source / 表 / 可用指标 / 可用维度&lt;br&gt;【表关联关系】join_type · 表 · on · alias&lt;br&gt;【可用指标】name: expr（description）&lt;br&gt;【可用维度】name · desc · type&lt;br&gt;【重要规则】6 条硬约束&lt;br&gt;+ RAG few-shot 业务词典（top_k=5，附加不替换基线）&lt;br&gt;+ entity_hints（router 已抽取，强指令）&lt;br&gt;+ 【用户问题】" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="B">
+          <mxGeometry x="20" y="40" width="560" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="generate_with_schema_fallback（结构化输出三级兜底）&lt;br&gt;① strict json_schema（枚举锁死 func / operator / join_type）&lt;br&gt;② json_object 模式　③ 纯文本生成" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;" vertex="1" parent="B">
+          <mxGeometry x="20" y="192" width="560" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="_parse_llm_output　容错解析（代码块 / 前后噪音）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="B">
+          <mxGeometry x="20" y="266" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="_post_process_dsl 八步确定性修复&lt;br&gt;0　_auto_fix_data_source 按指标/维度反推数据源&lt;br&gt;1　data_source 不在白名单 → 回落默认&lt;br&gt;1b _fix_filter_fields 剥离 &quot;purchase.region_id&quot; 前缀&lt;br&gt;2　metrics 字符串 / 缺省 → 规范成 [{func, field, alias}]&lt;br&gt;3　正则剥掉 SUM() / AVG() 外壳&lt;br&gt;4　dimensions 清非字符串；4b　剔除与 filter 重复的维度&lt;br&gt;5　limit 非法 → 10，&gt;100 → 100　6　offset 补 0&lt;br&gt;7　order_by direction 小写，alias → field&lt;br&gt;8　算子别名映射 eq→=，notin→not_in，isnull→is_null…" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="B">
+          <mxGeometry x="20" y="318" width="560" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" value="_semantic_fix_dsl　LLM 语义修复（否定词 / 时间条件 / 指标口径）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="B">
+          <mxGeometry x="20" y="480" width="560" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="b6" value="DSL.model_validate → _run_semantic_validation" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="B">
+          <mxGeometry x="20" y="532" width="560" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="C" value="③ 双层校验 — 硬校验 vs 软校验（分工明确）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF4F4;strokeColor=#B85450;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="80" width="600" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="DSLValidator（validate_dsl 节点调用，抛异常）&lt;br&gt;validate(dsl) → 累积 errors → raise ValidationError&lt;br&gt;1　data_source 必须在注册表&lt;br&gt;2　metric alias 必须存在于全局 metrics&lt;br&gt;3　每个 dimension 必须存在于全局 dimensions&lt;br&gt;4　数据源归属：指标属于 ds_cfg.metrics；&lt;br&gt;　　维度属于 ds_cfg.dimensions 或 _dim_reachable_via_joins()（跨表维度）&lt;br&gt;5　metrics 与 dimensions 不能同时为空&lt;br&gt;6　post_process：metric 必须在当前 metrics 中；&lt;br&gt;　　group_top_n 需 group_by 且维度 ≥ 2；proportion 需分组维度；&lt;br&gt;　　output_field 必须匹配 ^[A-Za-z_][A-Za-z0-9_]*$" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="C">
+          <mxGeometry x="20" y="42" width="560" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="SemanticValidator（生成节点内调用，errors + warnings）&lt;br&gt;返回 tuple[list[str], list[SemanticWarning]]&lt;br&gt;_validate_data_source / _validate_metrics / _validate_dimensions&lt;br&gt;_validate_filters · _validate_filter_tree · _validate_filter_leaf&lt;br&gt;　未注册字段 → warning unknown_field&lt;br&gt;　&gt; &lt; &gt;= &lt;= 要求数值；between 要求两元素；in 要求 list → error&lt;br&gt;　值域 allowed_values 越界 → warning value_domain&lt;br&gt;_validate_having：having 必须与 metrics 同现，h.field 必须是 metric alias&lt;br&gt;_validate_condition_conflicts：同一 and 子树字段多个不同 = → error&lt;br&gt;　（or 分支递归，not 分支跳过）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="C">
+          <mxGeometry x="20" y="248" width="560" height="172" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="触发点&lt;br&gt;errors → raise ValidationError(&quot;Semantic validation failed&quot;)&lt;br&gt;warnings → 仅 logger.warning，不阻断" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FDF0EF;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="C">
+          <mxGeometry x="20" y="436" width="560" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="校验失败的出口&lt;br&gt;DSLValidator 失败 → dsl_attempts{source=validation, valid=false}&lt;br&gt;→ route_after_validate 判定 retry（correct_dsl）或 error" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FDF0EF;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="C">
+          <mxGeometry x="20" y="510" width="560" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="D" value="④ 语义解析与值映射 — semantic/resolver.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="600" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="SemanticResolver.resolve(dsl)&lt;br&gt;model_copy 更新 metrics / filters&lt;br&gt;_resolve_metrics：alias → metrics[alias][&quot;expr&quot;]&lt;br&gt;alias 无 expr → raise SemanticError（SEMANTIC_ERROR, 400）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="D">
+          <mxGeometry x="20" y="42" width="560" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="_parse_metric_expr 正则&lt;br&gt;^([A-Z]+)\( *(?:DISTINCT )?(.+?) *\)$ → (func.lower(), inner)&lt;br&gt;解析失败 → field 原样保留 expr&lt;br&gt;聚合函数白名单：sum / avg / count / min / max&lt;br&gt;COUNT(DISTINCT x) 归为 count" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="D">
+          <mxGeometry x="20" y="152" width="560" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="_resolve_filters 只处理 list，不处理 FilterTreeNode&lt;br&gt;值刻意保留语义（&quot;华东&quot; 不转 &quot;HD&quot;）—— 翻译交给 SQLBuilder" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="D">
+          <mxGeometry x="20" y="262" width="560" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="编码映射的真实来源&lt;br&gt;configs/metrics.yaml → dimensions.region.value_map&lt;br&gt;　{华东: HD, 华南: HN, 华北: HB, 华西: HX}&lt;br&gt;engine 构造 vmaps = {dim: value_map} 注入 SQLBuilder&lt;br&gt;SQLBuilder._translate_filter_value() 在 WHERE 阶段翻译（= != in 生效）&lt;br&gt;RuleBasedDSLGenerator 则在生成阶段直接写码值" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="D">
+          <mxGeometry x="20" y="339" width="560" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="指标定义（metrics.yaml 真实结构）&lt;br&gt;sales_amount:　expr: SUM(order_amount)　description: 销售额&lt;br&gt;customer_count: expr: COUNT(DISTINCT customer_id)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="D">
+          <mxGeometry x="20" y="469" width="560" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="d6" value="DSLBuilder（独立工具类）&lt;br&gt;纯程序化构造，不调 LLM 不校验&lt;br&gt;metric / dimension / filter / order_by / limit / build" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="D">
+          <mxGeometry x="20" y="554" width="560" height="52" as="geometry" />
+        </mxCell>
+
+        <mxCell id="E" value="⑤ SQL 构建流程 — sql_engine/builder.py（SQLAlchemy Core）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="680" y="680" width="600" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="① 主表：_table_mapping[dsl.data_source]，缺失抛 ValidationError&lt;br&gt;② JOIN 推断：dsl.joins 为空 → _collect_referenced_columns + _determine_required_joins" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="E">
+          <mxGeometry x="20" y="42" width="560" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="③ join 子句：反射表 → alias(j.alias) → _resolve_column(on) → left / right / inner" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="E">
+          <mxGeometry x="20" y="110" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="④ SELECT 列&lt;br&gt;先 dimensions：_dimension_mapping 语义名 → 物理列，col.label(dim) 保留语义输出名&lt;br&gt;再 metrics：_metric_expr 优先 alias 再 field，注册表达式权威&lt;br&gt;　含 ( → _parse_expr；无 ( → getattr(func, metric.func)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="E">
+          <mxGeometry x="20" y="162" width="560" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="⑤ FROM：select_from(主表) → 依次 .join(ref, cond) 链式叠加" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="E">
+          <mxGeometry x="20" y="264" width="560" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="⑥ WHERE&lt;br&gt;先 time_field + time_range → col.between(t0, t1)&lt;br&gt;再 filters：list 逐叶 _build_leaf_condition；树 _build_condition_tree 递归 and_ / or_ / not_&lt;br&gt;值映射 _translate_filter_value（= != in）→ and_(*conditions)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="E">
+          <mxGeometry x="20" y="314" width="560" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="⑦ GROUP BY：仅当 dimensions 与 metrics 同时存在&lt;br&gt;⑧ HAVING：h.field 先过白名单 ^[A-Za-z_][A-Za-z0-9_]*$&lt;br&gt;　column(h.field) 与 literal(h.value) 比较，支持 = != &gt; &lt; &gt;= &lt;= between" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="E">
+          <mxGeometry x="20" y="411" width="560" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="⑨ ORDER BY：_resolve_column；失败且是 metric alias → text(ob.field)&lt;br&gt;⑩ LIMIT：if dsl.limit and dsl.post_process is None（post_process 需完整分组）&lt;br&gt;　　OFFSET：dsl.offset&lt;br&gt;⑪ 编译：str(stmt.compile(engine, literal_binds=True))" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="E">
+          <mxGeometry x="20" y="495" width="560" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="F" value="⑥ JOIN 推断 · 安全闸门 · 方言 — builder / scanner / sandbox / dialect" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="680" width="600" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" value="_determine_required_joins 算法&lt;br&gt;_collect_referenced_columns：dimensions · metric 简单 inner 列 ·&lt;br&gt;　filters（树递归）· time_field · order_by，均先过 _dimension_mapping&lt;br&gt;find_join_table(col)：不在主表 → 遍历配置 join 表匹配列&lt;br&gt;带点引用 alias.col → alias 反查依赖表&lt;br&gt;resolve_deps：on 含 &quot;.&quot;（p.supplier_id）→ 递归拉入被依赖表&lt;br&gt;依赖优先；无跨依赖时按 size 排序 small=0 / medium=1 / large=2&lt;br&gt;on 字段：cfg.get(&quot;on&quot;) or cfg.get(True)（PyYAML 把 on 解析成布尔键）&lt;br&gt;别名只用配置声明的 p / c / s，未声明则不加" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="F">
+          <mxGeometry x="20" y="42" width="560" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" value="SQLScanner.scan(sql) → 命中即 raise ValidationError&lt;br&gt;① \b(DELETE|UPDATE|DROP|INSERT|ALTER|CREATE|TRUNCATE)\b　危险操作&lt;br&gt;② /\*.*?\*/　块注释　③ --[^\n]*　行注释&lt;br&gt;④ \bUNION\b　⑤ ;\s*\w+　多语句" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="F">
+          <mxGeometry x="20" y="214" width="560" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" value="QuerySandbox.check(sql) → SandboxResult&lt;br&gt;max_scan_rows=100_000 · max_exec_time_ms=5_000 · preview_limit=10&lt;br&gt;_explain：仅 SELECT 允许 EXPLAIN QUERY PLAN，SCAN / SEARCH 条数 × 1000 估行&lt;br&gt;_inject_limit + 实跑 LIMIT 10 预览并计时&lt;br&gt;无 WHERE → 风险「可能触发全表扫描」；passed = 无风险" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="F">
+          <mxGeometry x="20" y="321" width="560" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" value="SQLExecutor.execute(sql) → list[dict]&lt;br&gt;engine.connect() + conn.execute(text(sql)) + dict(row._mapping)&lt;br&gt;执行后若 dsl.post_process 存在 → apply_post_process(data, post_process)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="F">
+          <mxGeometry x="20" y="433" width="560" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" value="DialectConverter（sqlglot）&lt;br&gt;SUPPORTED：mysql · postgres · clickhouse · doris · presto · spark&lt;br&gt;transpile(sql, target)：read=sqlite → write=target；不支持 / 失败抛 ValidationError" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="F">
+          <mxGeometry x="20" y="515" width="560" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b2c" value="↓" style="text;html=1;fontSize=20;fontColor=#D79B00;" vertex="1" parent="B">
+          <mxGeometry x="290" y="182" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c" value="↓" style="text;html=1;fontSize=20;fontColor=#D79B00;" vertex="1" parent="B">
+          <mxGeometry x="290" y="304" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="b4c" value="↓" style="text;html=1;fontSize=20;fontColor=#D79B00;" vertex="1" parent="B">
+          <mxGeometry x="290" y="466" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="b5c" value="↓" style="text;html=1;fontSize=20;fontColor=#D79B00;" vertex="1" parent="B">
+          <mxGeometry x="290" y="520" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="e1c" value="↓" style="text;html=1;fontSize=20;fontColor=#666666;" vertex="1" parent="E">
+          <mxGeometry x="290" y="96" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="e2c" value="↓" style="text;html=1;fontSize=20;fontColor=#666666;" vertex="1" parent="E">
+          <mxGeometry x="290" y="148" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="e3c" value="↓" style="text;html=1;fontSize=20;fontColor=#666666;" vertex="1" parent="E">
+          <mxGeometry x="290" y="250" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="e4c" value="↓" style="text;html=1;fontSize=20;fontColor=#666666;" vertex="1" parent="E">
+          <mxGeometry x="290" y="300" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="e5c" value="↓" style="text;html=1;fontSize=20;fontColor=#666666;" vertex="1" parent="E">
+          <mxGeometry x="290" y="397" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="e6c" value="↓" style="text;html=1;fontSize=20;fontColor=#666666;" vertex="1" parent="E">
+          <mxGeometry x="290" y="481" width="20" height="10" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

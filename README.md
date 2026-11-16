@@ -46,6 +46,7 @@ docs/
 ## 00-项目资料
 
 - [NL2DSL 项目流程图](<docs/00-项目资料/nl2dsl-project-flow.html>)：交互式架构与查询链路图，浏览器打开。
+- [七层架构图（PNG）](<docs/00-项目资料/架构图/nl2dsl-architecture.png>)：接入 / API / Agent 编排 / LangGraph 管道 / 安全治理 / 数据治理 / 基础设施，由 `nl2dsl-architecture.drawio` 用 draw.io 官方 viewer 渲染。
 
 ## 01-简历
 

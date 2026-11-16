@@ -1,0 +1,231 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-pipeline" name="02 查询管道">
+    <mxGraphModel dx="2100" dy="1300" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1960" pageHeight="1260" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="LA" value="① 入口与路由 — QueryState 初始化" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="1800" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="q_start" value="START&lt;br&gt;question · domain · user_id · tenant_id · data_source" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.2;fontSize=12;fontColor=#1F2937;" vertex="1" parent="LA">
+          <mxGeometry x="60" y="45" width="240" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="q_clar" value="clarification_node&lt;br&gt;ClarificationDetector.detect(question)&lt;br&gt;dsl 已给 / 无 LLM → 跳过" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=12;fontColor=#1F2937;" vertex="1" parent="LA">
+          <mxGeometry x="340" y="45" width="340" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="q_plan" value="plan_node&lt;br&gt;意图分类 + 任务分解（intents.yaml 7 类）&lt;br&gt;产出 plan: Plan" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=12;fontColor=#1F2937;" vertex="1" parent="LA">
+          <mxGeometry x="740" y="45" width="340" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="q_noteA" value="条件边 route_after_clarification：ambiguities 非空 → END(status=clarification)&lt;br&gt;条件边 route_after_plan：plan.intent == &quot;single_query&quot; → continue；其余 → END(agent)&lt;br&gt;（非单查询交回 AgentOrchestrator，不进本图）" style="text;html=1;whiteSpace=wrap;align=left;fontSize=11;fontColor=#5B6B7F;fillColor=none;strokeColor=none;" vertex="1" parent="LA">
+          <mxGeometry x="1140" y="30" width="620" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LB" value="② 复杂问题改写" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF8EE;strokeColor=#D79B00;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="240" width="1800" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="q_decomp" value="decompose_node&lt;br&gt;_looks_complex 快筛（对比/同比/环比/趋势/今年/vs…）→ LLM 输出 KEEP / REWRITE / SPLIT&lt;br&gt;REWRITE 保留 original_question，改写 question，complexity=complex_rewritten" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.2;fontSize=12;fontColor=#1F2937;" vertex="1" parent="LB">
+          <mxGeometry x="340" y="43" width="660" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q_noteB" value="SPLIT → 不支持 fan-out，回退原问题尽力而为（warning）&lt;br&gt;LLM 异常 → 保持原问题，complexity=simple" style="text;html=1;whiteSpace=wrap;align=left;fontSize=11;fontColor=#5B6B7F;fillColor=none;strokeColor=none;" vertex="1" parent="LB">
+          <mxGeometry x="1040" y="35" width="700" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LC" value="③ validation 子图 — DSL 生成与校验修正闭环（LangGraph 嵌套子图）" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=#F1F9F1;strokeColor=#82B366;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="400" width="1800" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="q_entry" value="conditional entry&lt;br&gt;state.dsl 非空？" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LC">
+          <mxGeometry x="20" y="95" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q_gen" value="generate_dsl_node&lt;br&gt;① 无 LLM → RuleBasedDSLGenerator&lt;br&gt;② 有 LLM → RAG.build_context(top_k=5)&lt;br&gt;③ 拼 prompt（Schema + few-shot + entity_hints）&lt;br&gt;④ strict json_schema 三级 fallback&lt;br&gt;⑤ _parse_llm_output → _post_process_dsl → _semantic_fix_dsl → DSL.model_validate" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LC">
+          <mxGeometry x="170" y="55" width="400" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="q_val" value="validate_dsl_node&lt;br&gt;DSLValidator.validate(dsl)&lt;br&gt;失败 → ValidationError(error_code)&lt;br&gt;写 dsl_attempts{source=validation, valid=false}" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LC">
+          <mxGeometry x="620" y="55" width="360" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="q_corr" value="correct_dsl_node（Agentic 修正）&lt;br&gt;① LLM 从错误提取检索关键词&lt;br&gt;② 定向 RAG 检索 top_k=5&lt;br&gt;③ error + 原 DSL + Schema + 定向上下文重新生成&lt;br&gt;④ 再走 post_process / semantic_fix / validate" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LC">
+          <mxGeometry x="1030" y="55" width="400" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="q_noteC" value="route_after_validate：&lt;br&gt;last attempt valid=false → 计数 generation ≥3 或 validation_failures ≥3 → error&lt;br&gt;否则 retry → correct_dsl；最后记录为 llm/mock 生成 → ok → END(子图)" style="text;html=1;whiteSpace=wrap;align=left;fontSize=11;fontColor=#5B6B7F;fillColor=none;strokeColor=none;" vertex="1" parent="LC">
+          <mxGeometry x="1460" y="55" width="320" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LD" value="④ 治理与质量 — permission 子图 · 语义解析 · 规则引擎 · 置信度" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F5FB;strokeColor=#9673A6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="660" width="1800" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="q_inj" value="inject_row_permission&lt;br&gt;RowLevelSecurity.inject(dsl, user_id)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LD">
+          <mxGeometry x="40" y="45" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q_col" value="check_col_permission&lt;br&gt;ColumnLevelSecurity 列白名单 / 脱敏" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LD">
+          <mxGeometry x="350" y="45" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q_res" value="resolve_semantic_node&lt;br&gt;SemanticResolver.resolve(dsl)&lt;br&gt;指标 → SQL 表达式" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LD">
+          <mxGeometry x="660" y="45" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q_opt" value="optimize_dsl_node（可选，需 SemanticConfig）&lt;br&gt;optimize() → Normalize + 规则引擎&lt;br&gt;fixes / warnings / rejections；fatal → END&lt;br&gt;max_limit=10000 硬上限" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LD">
+          <mxGeometry x="970" y="32" width="330" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="q_conf" value="confidence_node&lt;br&gt;confidence = min(syntax, semantic) × history（0-1）&lt;br&gt;≥0.8 continue｜0.6-0.8 warning｜&lt;0.6 clarify&lt;br&gt;子查询模式 clarif → warning 继续执行" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LD">
+          <mxGeometry x="1340" y="45" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q_noteD" value="permission_check 也是嵌套子图：inject_row → check_col，任一步报错即 END" style="text;html=1;whiteSpace=wrap;align=left;fontSize=11;fontColor=#5B6B7F;fillColor=none;strokeColor=none;" vertex="1" parent="LD">
+          <mxGeometry x="1650" y="45" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LE" value="⑤ SQL 构建 · 安全闸门 · 执行 · 降级重试" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="840" width="1800" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="q_simp" value="simplify_dsl_node&lt;br&gt;只留首个 metric / dimension&lt;br&gt;丢 joins / filters / order_by&lt;br&gt;limit ≤ 10（仅重试 1 次）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LE">
+          <mxGeometry x="30" y="38" width="240" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_build" value="build_sql_node&lt;br&gt;_restore_metric_fields(dsl)&lt;br&gt;SQLBuilder.build()&lt;br&gt;JOIN 被隐式推断时写 trace" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LE">
+          <mxGeometry x="290" y="38" width="240" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_scan" value="scan_sql_node&lt;br&gt;SQLScanner.scan(sql)&lt;br&gt;危险语句 → 抛错" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LE">
+          <mxGeometry x="550" y="38" width="220" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_sand" value="sandbox_check_node&lt;br&gt;QuerySandbox.check(sql)&lt;br&gt;→ SandboxResult.passed / risks" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LE">
+          <mxGeometry x="790" y="38" width="240" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_exec" value="execute_sql_node&lt;br&gt;SQLExecutor.execute(sql)&lt;br&gt;+ apply_post_process(dsl.post_process)&lt;br&gt;status: success / warning" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LE">
+          <mxGeometry x="1050" y="38" width="240" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_human" value="human_review_node&lt;br&gt;status = pending_review&lt;br&gt;compile 时 interrupt_before&lt;br&gt;（需 checkpointer）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LE">
+          <mxGeometry x="1310" y="38" width="250" height="88" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LF" value="⑥ 自检与解释输出" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1020" width="1800" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="q_verify" value="verify_dsl_node&lt;br&gt;LLM 自检：原问题 vs DSL vs 前 3 行样本&lt;br&gt;输出 PASS / WARN / FAIL + 理由&lt;br&gt;仅告警，不阻断" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=8;" vertex="1" parent="LF">
+          <mxGeometry x="100" y="38" width="380" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_exp" value="explain_node&lt;br&gt;生成自然语言解释&lt;br&gt;→ state.explanation" style="rounded=1;whiteSpace=wrap;html=1;arcSize=14;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.2;fontSize=11;fontColor=#1F2937;" vertex="1" parent="LF">
+          <mxGeometry x="530" y="38" width="340" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_end" value="END&lt;br&gt;data · sql · confidence · explanation · trace" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.6;fontSize=12;fontColor=#1F2937;" vertex="1" parent="LF">
+          <mxGeometry x="920" y="38" width="340" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="q_noteF" value="全链路每步写 state.trace（step/status/耗时/告警），供审计与 SSE 推送" style="text;html=1;whiteSpace=wrap;align=left;fontSize=11;fontColor=#5B6B7F;fillColor=none;strokeColor=none;" vertex="1" parent="LF">
+          <mxGeometry x="1300" y="45" width="480" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qe1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_start" target="q_clar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_clar" target="q_plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe3" value="continue｜single_query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q_plan" target="q_decomp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe4" value="未改写 / 已改写" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q_decomp" target="q_gen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe5" value="dsl 为空" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="LC" source="q_entry" target="q_gen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe6" value="dsl 已提供（/query/execute）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;exitX=0.5;exitY=0;entryX=0;entryY=0.7;" edge="1" parent="LC" source="q_entry" target="q_val">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="75" y="25" />
+              <mxPoint x="600" y="25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="LC" source="q_gen" target="q_val">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe8" value="retry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D79B00;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="LC" source="q_val" target="q_corr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe9" value="修正后重新校验" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D79B00;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F1F9F1;exitX=0.5;exitY=0;entryX=1;entryY=0.5;" edge="1" parent="LC" source="q_corr" target="q_val">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1230" y="25" />
+              <mxPoint x="980" y="25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe10" value="ok → 子图出口" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q_val" target="q_inj">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="640" />
+              <mxPoint x="240" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_inj" target="q_col">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_col" target="q_res">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_res" target="q_opt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe14" value="关闭优化器时直连" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="q_opt" target="q_conf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe15" value="continue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5B6B7F;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q_conf" target="q_build">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1530" y="820" />
+              <mxPoint x="470" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_build" target="q_scan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_scan" target="q_sand">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe18" value="passed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F2F4F5;" edge="1" parent="1" source="q_sand" target="q_exec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe19" value="未通过 → 人工审核" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F2F4F5;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="q_sand" target="q_human">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="970" y="952" />
+              <mxPoint x="1495" y="952" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe20" value="批准" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F2F4F5;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="q_human" target="q_exec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1495" y="862" />
+              <mxPoint x="1230" y="862" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe21" value="执行失败 → retry（≤1 次）" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B85450;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F2F4F5;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="q_exec" target="q_simp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1230" y="968" />
+              <mxPoint x="210" y="968" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe22" value="simplify → 重新 build" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B85450;strokeWidth=2;dashed=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#F2F4F5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="q_simp" target="q_build">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe23" value="成功" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q_exec" target="q_verify">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1230" y="1000" />
+              <mxPoint x="360" y="1000" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qe24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_verify" target="q_exp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qe25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#82B366;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="q_exp" target="q_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
