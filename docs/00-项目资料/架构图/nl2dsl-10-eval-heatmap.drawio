@@ -1,0 +1,249 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T00:00:00.000Z" agent="claude-code" version="24.7.17" type="device">
+  <diagram id="nl2dsl-eval" name="10 评测矩阵">
+    <mxGraphModel dx="2100" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="评测矩阵热力图 — 到底哪一维好、哪一维差，优化器有没有用" style="text;html=1;align=left;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="1300" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="数据全部取自 D:\demo\db-gpt\NL2DSL\reports\ 下的真实评测报告；不同批次数据集不同，横向只用于看趋势，不是线上指标。" style="text;html=1;align=left;fontSize=12;fontColor=#5B6B7F;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1400" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="图例：&lt;b&gt;■&lt;/b&gt; ≥90 深绿　&lt;b&gt;■&lt;/b&gt; 75–90 浅绿　&lt;b&gt;■&lt;/b&gt; 60–75 黄　&lt;b&gt;■&lt;/b&gt; 50–60 橙　&lt;b&gt;■&lt;/b&gt; &lt;50 红" style="text;html=1;align=left;fontSize=11;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="40" y="84" width="600" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1h" value="ecommerce&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;44 用例 · 2026-06-19&lt;br&gt;rule generator + optimizer on&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#334155;fontColor=#FFFFFF;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="116" width="170" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c2h" value="ecommerce&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;55 用例 · 2026-06-20&lt;br&gt;optimizer off 批次&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#334155;fontColor=#FFFFFF;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="116" width="170" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c3h" value="bank 银行域&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;10 用例 · 2026-06-20&lt;br&gt;跨域泛化验证&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#334155;fontColor=#FFFFFF;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="116" width="170" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c4h" value="supply_chain&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;10 用例 · 2026-06-20&lt;br&gt;跨域泛化验证&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#334155;fontColor=#FFFFFF;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="116" width="170" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="c5h" value="12 维综合&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;50 用例 · 2026-06-01&lt;br&gt;另一套评分口径&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#334155;fontColor=#FFFFFF;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="116" width="170" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r1l" value="总体（overall）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontStyle=1;fontColor=#1F2937;align=right;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="186" width="250" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r1c1" value="81.6%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=16;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="186" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r1c2" value="92.6%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=16;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="186" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r1c3" value="50.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=16;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="186" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r1c4" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=16;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="840" y="186" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r1c5" value="69.7%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=16;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="186" width="170" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r2l" value="intent 意图" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontColor=#1F2937;align=right;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="246" width="250" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c1" value="95.5%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="246" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c2" value="98.2%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="246" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c3" value="50.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="246" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c4" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="840" y="246" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r2c5" value="66.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="246" width="170" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r3l" value="metric 指标" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontColor=#1F2937;align=right;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="306" width="250" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c1" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="306" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c2" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="306" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c3" value="50.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="306" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c4" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="840" y="306" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r3c5" value="76.4%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="306" width="170" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r4l" value="filter 过滤" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontColor=#1F2937;align=right;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="366" width="250" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r4c1" value="81.8%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="366" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r4c2" value="92.7%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="366" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r4c3" value="50.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="366" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r4c4" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="840" y="366" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r4c5" value="73.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="366" width="170" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r5l" value="planner 计划" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontColor=#1F2937;align=right;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="426" width="250" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r5c1" value="56.6%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="426" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r5c2" value="82.6%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="426" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r5c3" value="50.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="426" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r5c4" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="840" y="426" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r5c5" value="68.9%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="426" width="170" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r6l" value="governance 治理" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontColor=#1F2937;align=right;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="486" width="250" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r6c1" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="300" y="486" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r6c2" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="486" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r6c3" value="50.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CBAD;strokeColor=#B85450;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="660" y="486" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r6c4" value="100.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="840" y="486" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="r6c5" value="70.0%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=15;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="486" width="170" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="opt" value="优化器开关对比（同一批 44 用例，rule generator）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=13;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="116" width="630" height="426" as="geometry" />
+        </mxCell>
+        <mxCell id="opt1" value="optimizer ON　→　81.6%（9 / 22 通过）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=12;fontStyle=1;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="opt">
+          <mxGeometry x="20" y="42" width="590" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="opt2" value="optimizer OFF　→　81.6%（9 / 22 通过）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=12;fontStyle=1;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="opt">
+          <mxGeometry x="20" y="84" width="590" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="opt3" value="差值 = 0.0 个百分点" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontSize=13;fontStyle=1;fontColor=#B85450;align=center;" vertex="1" parent="opt">
+          <mxGeometry x="20" y="126" width="590" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="opt4" value="原因：optimizer_stats 显示 avg_fixes = 0.0，avg_rejections = 0.0，&lt;br&gt;avg_warnings = 0.14 —— 这批样本的 DSL 本身就已经规范，&lt;br&gt;28 条规则几乎没有触发，所以开关无差异。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="opt">
+          <mxGeometry x="20" y="172" width="590" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="opt5" value="这意味着：现有评测不能证明优化器有效，&lt;br&gt;要证明它，必须专门构造&quot;脏 DSL&quot;样本（缺 alias、&lt;br&gt;SUM 套 SUM、limit 越界、枚举值写错、冗余 JOIN）&lt;br&gt;—— 这是评测集的缺口，不是优化器的缺口。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="opt">
+          <mxGeometry x="20" y="260" width="590" height="86" as="geometry" />
+        </mxCell>
+        <mxCell id="opt6" value="另一个佐证：2026-06-20 那批（55 用例）不做规则注入时是 92.6%，&lt;br&gt;说明分数主要由样本难度决定，而不是由优化器决定。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;dashed=1;fontSize=11;fontColor=#334155;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="opt">
+          <mxGeometry x="20" y="356" width="590" height="52" as="geometry" />
+        </mxCell>
+
+        <mxCell id="h12" value="12 维打分逐项（2026-06-01 · 50 用例 · 权重合计 1.0 · 通过阈值 0.8）" style="text;html=1;align=left;fontSize=13;fontStyle=1;fontColor=#2B3A4A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="900" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d1" value="intent&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 8%&lt;/font&gt;&lt;br&gt;&lt;b&gt;66.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="metric&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 20%&lt;/font&gt;&lt;br&gt;&lt;b&gt;76.4%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="190" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="dimension&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 12%&lt;/font&gt;&lt;br&gt;&lt;b&gt;76.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="340" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="filter&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 16%&lt;/font&gt;&lt;br&gt;&lt;b&gt;73.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="490" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="join&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 7%&lt;/font&gt;&lt;br&gt;&lt;b&gt;60.3%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE699;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="640" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d6" value="limit&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 4%&lt;/font&gt;&lt;br&gt;&lt;b&gt;78.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="790" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d7" value="order_by&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 3%&lt;/font&gt;&lt;br&gt;&lt;b&gt;76.8%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="940" y="588" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d8" value="sql_success&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 10%&lt;/font&gt;&lt;br&gt;&lt;b&gt;80.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C6E0B4;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="660" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d9" value="result_accuracy&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 10%&lt;/font&gt;&lt;br&gt;&lt;b&gt;37.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4B6B6;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="190" y="660" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d10" value="permission&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 4%&lt;/font&gt;&lt;br&gt;&lt;b&gt;100.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="340" y="660" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d11" value="masking&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 3%&lt;/font&gt;&lt;br&gt;&lt;b&gt;100.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#A9D08E;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="490" y="660" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d12" value="audit&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;权重 3%&lt;/font&gt;&lt;br&gt;&lt;b&gt;0.0%&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4B6B6;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="640" y="660" width="142" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="d13" value="说明：masking 100% 是评测口径分（检查脱敏规则是否存在），&lt;br&gt;不等于运行时真的脱敏了 —— 主链路还没接 mask()。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F5F5F5;strokeColor=#666666;dashed=1;fontSize=10.5;fontColor=#334155;align=left;spacingLeft=12;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="790" y="660" width="292" height="64" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cn" value="从这张图能读出的 6 件事" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F4F7FB;strokeColor=#9AA7B8;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=13;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="752" width="1080" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="cn1" value="① metric 在三个域都是 100%：语义层 + 术语表 + 指标注册表这条链路是这一版最稳的一环。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="cn">
+          <mxGeometry x="20" y="42" width="1040" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="cn2" value="② intent 95.5% / 98.2%（ecommerce）：7 类配置化意图 + 关键词规则已经够用，不需要更重的模型。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#EAF6EA;strokeColor=#82B366;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="cn">
+          <mxGeometry x="20" y="80" width="1040" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="cn3" value="③ planner 56.6% 是 ecommerce 的最短板：JOIN 推断（跨表 6 条全失败）与多跳问题是主要失分点。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="cn">
+          <mxGeometry x="20" y="118" width="1040" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="cn4" value="④ bank 全域 50% 且五维同分：execution_errors = 5，失败发生在执行层，把所有维度一起拉平 —— 这不是语义问题。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="cn">
+          <mxGeometry x="20" y="156" width="1040" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="cn5" value="⑤ 优化器 on/off 完全一致（avg_fixes=0）：现有样本测不出优化器的价值，需要补&quot;脏 DSL&quot;用例集。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="cn">
+          <mxGeometry x="20" y="194" width="1040" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="cn6" value="⑥ 12 维里 result_accuracy 37%、audit 0% 是真实短板；前者是结果比对口径问题，后者是审计未进评测链路。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#FDF0EF;strokeColor=#B85450;fontSize=11;fontColor=#1F2937;align=left;spacingLeft=12;" vertex="1" parent="cn">
+          <mxGeometry x="20" y="232" width="1040" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="caveat" value="使用边界（别被分数骗）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F2F4F5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=13;fontStyle=1;fontColor=#2B3A4A;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="752" width="720" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="cv1" value="· 全部是历史快照，不是线上指标；仓库里没有持续跑的 CI 门禁。&lt;br&gt;· 各批样本量不同（10 / 44 / 50 / 55），单条用例在 bank 域占 10 个百分点。&lt;br&gt;· 12 维与 V2 五维是两套口径，不能直接相加或换算。&lt;br&gt;· 2026-06-01 那批跑的是真实 LLM 链路；部分 V2 批次延迟为 0.0 ms，&lt;br&gt;　　说明是规则生成路径（未真实调用 LLM），不能用来评价模型效果。&lt;br&gt;· masking 100% 是&quot;规则存在性&quot;检查，不代表运行时已脱敏。&lt;br&gt;· 面试口径：说&quot;我搭了评测体系并能跑通真实链路&quot;，不要说&quot;准确率 92%&quot;。" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="caveat">
+          <mxGeometry x="20" y="42" width="680" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="cv2" value="下一步最该补的三件事：&lt;br&gt;1) 以 92.6% 那批为基线，固定 dataset_hash 做回归门禁&lt;br&gt;2) 构造 30 条&quot;脏 DSL&quot;用例，专门测 28 条规则&lt;br&gt;3) 把 join / cross_table / having 失败样例做成专项集，盯 planner" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10.5;fontColor=#1F2937;align=left;spacingLeft=12;spacingTop=6;" vertex="1" parent="caveat">
+          <mxGeometry x="20" y="202" width="680" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -55,6 +55,8 @@ docs/
   6. `nl2dsl-06-end-to-end-walkthrough.drawio` — **端到端走查**：一句中文问题，每一步的真实产物（DSL / SQL / 返回）
   7. `nl2dsl-07-request-timeline.drawio` — 请求时序：前端 / API / Agent / 管道 / LLM / 存储六方交互
   8. `nl2dsl-08-project-onepager.drawio` — **一页看懂**：痛点与设计选择、技术选型理由、能力边界、规模与质量基线
+  9. `nl2dsl-09-code-map.drawio` — **代码地图**：图上的层 ↔ 目录 ↔ 文件 ↔ 类/函数，四级下钻路径
+  10. `nl2dsl-10-eval-heatmap.drawio` — **评测矩阵热力图**：各域各维度得分、优化器 on/off 对比、12 维逐项与使用边界
 
 ## 01-简历
 
